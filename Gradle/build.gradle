@@ -1,0 +1,123 @@
+group 'Martin'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.projectlombok:lombok:1.16.6'
+}
+/*
+// 使用java.lang.Object来表示版本属性；Gradle总是使用version的toString()方法返回的值
+version = new ProjectVersion(0,1)
+class ProjectVersion{
+    Integer major;
+    Integer minor;
+    Boolean release;
+    ProjectVersion(Integer major,Integer minor){
+        this.major = major;
+        this.minor = minor;
+        this.release = Boolean.FALSE;
+    }
+    ProjectVersion(Integer major,Integer minor,Boolean release){
+        this(major,minor);
+        this.release = release;
+    }
+    @Override
+    String toString(){
+        // 如果release的值为false，则取-SNAPSHOT
+        "$major.$minor${release ? '':'-SNAPSHOT'}"
+    }
+}
+
+// file()方法由Project接口提供，它创建一个相对于project目录的java.io.File实例
+ext.versionFile = file('version.properties')
+// Task配置的定义不使用“<<”符号
+task loadVersion{
+    project.version = readVersion()
+}
+
+
+ProjectVersion readVersion(){
+    logger.quiet 'Reading the version file.'
+    if(!versionFile.exists()){
+        // 如果版本文件不存在，抛出带有适当信息的Gradle异常
+        throw new GradleException("Required version file does not exist:$versionFile.canonicalPath")
+    }
+    Properties versionProps = new Properties()
+    versionFile.withInputStream{
+            //Groovy’s file implementation adds methods to read it with newly created InputStream.
+        stream -> versionProps.load(stream)
+    }
+    // 如果一条语句是Groovy方法中的最后一条语句，可以省略返回语句
+    new ProjectVersion(versionProps.major.toInteger(),versionProps.minor.toInteger(),versionProps.release.toBoolean())
+}
+
+task printVersion() << {
+    logger.quiet "Version: $version"
+}
+
+
+
+
+
+
+
+
+task printVersion{
+    doLast {
+        println "Version: $version"
+    }
+    doFirst {
+        println "Before reading the project version"
+    }
+}
+
+printVersion.doFirst {
+    println "First action"
+}
+
+printVersion << {
+    println "Last action"
+}
+
+printVersion << {
+    logger.quiet "Version: $version"
+}
+// “<<”是doLast的快捷版本
+task doLastShortcut << {
+    println "“<<”是doLast的快捷版本"
+}
+
+// 通过参数方式设置Task的逻辑组及描述
+task printVersion1(group: 'versioning',description: 'Print project version.') {
+    doLast {logger.quiet "Version: $version"}
+}
+// 通过调用setter方法来设置Task的逻辑组及描述
+task printVersion2 {
+    group = 'versioning'
+    description = 'Print project version.'
+    doLast {
+        logger.quiet "Version: $version"
+    }
+}
+
+
+task first << { println "first" }
+task second << { println "second" }
+task printVersion3(dependsOn: [second, first]) { // []里面的依赖执行顺序是不确定的
+    doLast {logger.quiet "Version: $version"}
+}
+task third << { println "third" }
+third.dependsOn('printVersion3') // 通过Task名称引用
+
+task first << { println "first" }
+task second << { println "second" }
+first.finalizedBy second // 声明first由second终止
+*/

@@ -1,0 +1,11 @@
+<!-- *.hbm.xml -->
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+    <class>
+        <!-- 设置该持久化类的二级缓存并发访问策略 read-only read-write nonstrict-read-write transactional-->
+        <cache usage="read-write"/>
+    </class>
+</hibernate-mapping>

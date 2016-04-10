@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+	<Resource name="jndi/local_1"
+        auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/local_1"
+        username="root"
+        password=""
+        maxActive="20"
+        maxIdle="10"
+        maxWait="10000"/>
+</Context>

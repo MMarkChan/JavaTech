@@ -1,0 +1,25 @@
+group 'Martin'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
+    compile 'org.springframework:spring-core:4.2.5.RELEASE'
+    compile 'org.springframework:spring-beans:4.2.5.RELEASE'
+    compile 'org.springframework:spring-context:4.2.5.RELEASE'
+    compile 'org.springframework:spring-context-support:4.2.5.RELEASE'
+    compile 'org.springframework:spring-test:4.2.5.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.2.5.RELEASE'
+    compile 'org.apache.commons:commons-dbcp2:2.1.1'
+    compile 'commons-dbcp:commons-dbcp:1.4'
+    compile 'org.springframework:spring-webmvc:4.2.5.RELEASE'
+
+}

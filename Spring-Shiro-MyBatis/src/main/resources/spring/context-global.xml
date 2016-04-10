@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/beans/spring-aop.xsd">
+
+    <context:annotation-config/>  
+	<!--<aop:aspectj-autoproxy />-->
+	<context:component-scan base-package="com.jay.demo" />
+	<context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true" />
+
+    <jdbc:embedded-database id="dataSource">
+        <jdbc:script location="classpath:dbscripts/schema.sql" />
+        <jdbc:script location="classpath:dbscripts/data.sql" />
+    </jdbc:embedded-database>
+
+    <!--如果不想要使用连接池来配置hsqldb，可以作如下配置
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+        <property name="url" value="jdbc:hsqldb:mem:test;sql.syntax_ora=true" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
+    </bean>
+
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:test-data/schema.sql" />
+        <jdbc:script location="classpath:test-data/data.sql" />
+    </jdbc:initialize-database>-->
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-configuration.xml" />
+        <property name="mapperLocations" value="classpath*:com/jay/demo/bean/mappers/**/*.xml" />
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionFactory" />
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.jay.demo.dao" />
+    </bean>
+
+    <!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的ShiroDbRealm.java -->
+    <bean id="myRealm" class="com.jay.demo.shiro.UserRealm"/>
+
+    <!-- Shiro默认会使用Servlet容器的Session,可通过sessionMode属性来指定使用Shiro原生Session -->
+    <!-- 即<property name="sessionMode" value="native"/>,详细说明见官方文档 -->
+    <!-- 这里主要是设置自定义的单Realm应用,若有多个Realm,可使用'realms'属性代替 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="myRealm"/>
+    </bean>
+    <!-- Shiro主过滤器本身功能十分强大,其强大之处就在于它支持任何基于URL路径表达式的、自定义的过滤器的执行 -->
+    <!-- Web应用中,Shiro可控制的Web请求必须经过Shiro主过滤器的拦截,Shiro对基于Spring的Web应用提供了完美的支持 -->
+    <!-- Shiro Filter -->
+    <bean id = "shiroFilter"   class = "org.apache.shiro.spring.web.ShiroFilterFactoryBean" >
+        <property name = "securityManager"   ref = "securityManager"   />
+        <property name = "loginUrl"   value = "/login"   />
+        <property name = "successUrl"   value = "/user/list"   />
+        <property name = "unauthorizedUrl"   value = "/login"   />
+        <property name = "filterChainDefinitions" >
+            <value>
+                /login=anon
+                /user/**=authc
+                /role/edit/*=perms[role:edit]
+                /role/save=perms[role:edit]
+                /role/list=perms[role:view]
+                /**=authc
+            </value >
+        </property>
+    </bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+</beans>

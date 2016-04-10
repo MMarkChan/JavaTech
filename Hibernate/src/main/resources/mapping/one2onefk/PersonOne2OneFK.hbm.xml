@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+    <class name="mapping.one2onefk.PersonOne2OneFK" table="person_one2onefk">
+        <id name="personid">
+            <generator class="identity"/>
+        </id>
+        <property name="name"/>
+        <property name="age"/>
+        <!--用来映射关联PO column是Address在该表中的外键列名,增加unique变成“1-1”-->
+        <many-to-one name="addressOne2OneFK" column="addressId" unique="true"/>
+    </class>
+</hibernate-mapping>
+
+

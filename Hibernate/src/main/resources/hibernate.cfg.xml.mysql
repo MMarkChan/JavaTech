@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/global</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password"></property>
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+        <!-- Disable the second-level cache -->
+        <!--<property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+        -->
+        <!-- 配置二级缓存 -->
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+        <!--
+        缓存的并发策略可以是四种之一： read-only, read-write, nonstrict-read-write, transactional
+        -->
+        <property name="hibernate.cache.default_cache_concurrency_strategy">read-only</property>
+        <!-- hibernate3的二级缓存配置 -->
+        <!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property> -->
+        <!-- 开启查询缓存 -->
+        <property name="hibernate.cache.use_query_cache">true</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <!-- Drop and re-create the database schema on startup -->
+        <!--
+        create：
+            每次加载hibernate时都会删除上一次的生成的与实体类对应的表，
+            然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，
+            这就是导致数据库表数据丢失的一个重要原因。
+        create-drop ：
+            每次加载hibernate时根据model类生成表，但是sessionFactory一关闭,表就自动删除，
+            也就是说sessionFactory.close()被调用时表会被删除。
+        update：
+            最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构
+            （前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，
+            即使表结构改变了但表中的行仍然存在不会删除以前的行。要注意的是当部署到服务器后，
+            表结构是不会被马上建立起来的，是要等 应用第一次运行起来后才会。
+            删除实体类中的字段时，不会更新表；向实体添加字段时会更新表
+        validate ：
+            每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，
+            如果两边不一致会报错。
+        -->
+        <property name="hbm2ddl.auto">create-drop</property>
+        <mapping class="model.Person" />
+        <mapping class="model.Address" />
+    </session-factory>
+</hibernate-configuration>

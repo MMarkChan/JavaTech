@@ -1,0 +1,17 @@
+group 'JavaTech'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+}

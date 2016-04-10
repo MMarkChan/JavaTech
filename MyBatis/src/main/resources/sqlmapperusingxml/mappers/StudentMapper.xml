@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sqlmapperusingxml.mappers.StudentMapper">
+    <select id="findStudentById" parameterType="int" resultType="Student">
+        select stud_id as studId, name, email, dob from Students where
+        stud_id=#{studId}
+    </select>
+
+
+    <resultMap type="Address" id="AddressResult">
+        <id property="addrId" column="addr_id"/>
+        <result property="street" column="street"/>
+        <result property="city" column="city"/>
+        <result property="state" column="state"/>
+        <result property="zip" column="zip"/>
+        <result property="country" column="country"/>
+    </resultMap>
+    <select id="findAddressById" parameterType="int"
+            resultMap="AddressResult">
+        SELECT * FROM ADDRESSES WHERE ADDR_ID=#{id}
+    </select>
+    <resultMap type="Student" id="StudentWithAddressResult">
+        <id property="studId" column="stud_id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <association property="address" column="addr_id"
+                     select="findAddressById"/>
+    </resultMap>
+
+    <select id="findStudentWithAddress" parameterType="int"
+            resultMap="StudentWithAddressResult">
+        SELECT * FROM STUDENTS WHERE STUD_ID=#{id}
+    </select>
+
+    <update id="updateStudent" parameterType="Student">
+        update students
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="email != null">email=#{email},</if>
+            <if test="phone != null">phone=#{phone},</if>
+        </set>
+        where stud_id=#{id}
+    </update>
+
+
+    <insert id="insertStudent" parameterType="Student"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into students(name,email,addr_id, phone,gender)
+        values(#{name},#{email},#{address.addrId},#{phone},#{gender})
+    </insert>
+</mapper>
